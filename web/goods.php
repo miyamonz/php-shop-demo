@@ -2,16 +2,17 @@
 session_start();
 require_once(__DIR__ . "/../util/pdo.php");
 
-if(isset($_POST['goodsid'])) {
-    $goodsid = $_POST['goodsid'];
+if(isset($_GET['goodsid'])) {
+    $goodsid = $_GET['goodsid'];
 }else{
-    $goodsid = "abo02";
+    $goodsid = "";
     // $goodsid = "";
 }
 $pdo = getPdo();
 $query = <<<EOL
 select 
 g.id as id,
+g.price as price,
 g.name as name,
 g.size as size,
 s.quantity,
@@ -30,6 +31,7 @@ $st = $pdo->query($query);
 $row = $st->fetch(PDO::FETCH_ASSOC); 
 echo var_dump($row);
 
+//まとめて取るのはよくない。商品自体はあるのに、在庫数が未セットの場合も、商品が無いように見える
 ?>
 
 <!DOCTYPE html>
@@ -46,6 +48,14 @@ echo var_dump($row);
 <p>商品説明</p>
 <table>
     <tr>
+        <td>商品名</td>
+        <td><?=$row['name']?></td>
+    </tr>
+    <tr>
+        <td>単価</td>
+        <td><?=$row['price']?></td>
+    </tr>
+    <tr>
         <td>サイズ</td>
         <td><?=$row['size']?></td>
     </tr>
@@ -61,6 +71,11 @@ echo var_dump($row);
         <td><?= $zaiko ?></td>
     </tr>
 </table>
+<hr>
+<form action="" method="post">
+<input type="number">
+<input type="submit" value="買い物かごに入れる">
+</form>
 <?php } ?>
 </body>
 </html>

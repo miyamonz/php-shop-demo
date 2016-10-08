@@ -37,3 +37,10 @@ function getColmuns($pdo, $tableName) {
     }
     return $columns;
 }
+
+function getDemoCart(){
+    $r = [];
+    $r[] = ["goodsid"=>"abo01", "quantity"=>2];
+    $r[] = ["goodsid"=>"abo02", "quantity"=>5];
+    return $r;
+}

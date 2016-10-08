@@ -16,6 +16,7 @@ require_once(__DIR__ . "/../util/pdo.php");
     $kensu = $_SESSION['cart'] ? count($_SESSION['cart']) : 0;
     ?>
     <span>買い物かごには<?= $kensu?>件入っています</span>
+<a href="cart.php">確認する</a>
     <a href="add.php">add</a>
 
 <h2>商品リスト</h2>
@@ -30,18 +31,24 @@ $table = "inventory.goods";
 
 <table>
     <tr>
-        <?php for($i=0; $i<count($columns); $i++) { ?>
-        <td><?= $columns[$i]?></td>
+<?php
+        $th = ['id', 'name', 'price'];
+        $th2 = ['id', "商品名", '値段'];
+        ?>
+        <?php for($i=0; $i<count($th2); $i++) { ?>
+        <td><?= $th2[$i]?></td>
         <?php } ?>
     </tr>
 
     <?php for($i=0; $i<count($rows); $i++) { ?>
     <tr>
         <?php
-            for($j=0; $j < count($columns); $j++){
-                echo "<td>",$rows[$i][$columns[$j]],"</td>",PHP_EOL;
+
+            for($j=0; $j < count($th); $j++){
+                echo "<td>",$rows[$i][$th[$j]],"</td>",PHP_EOL;
             }
         ?>
+            <td><a href="goods.php?goodsid=<?= $rows[$i]['id']?>">商品ページへ</a></td>
     </tr>
     <?php } ?>
 </table>
