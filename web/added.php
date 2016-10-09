@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 session_start();
 require_once(__DIR__."/../util/pdo.php");
 
@@ -32,7 +32,7 @@ if($isInDb){
   $goodsName     = $goodsInfo['name'];
   $zaiko         = $goodsInfo['quantity'];
   echo $zaiko;
-  $isZaikoTariru = ($zaiko > -->= $quantity);
+  $isZaikoTariru = ($zaiko >= $quantity);
   if($isZaikoTariru) $isAccept = true;
 }else $errors[] = "dbにありませんでした";
 

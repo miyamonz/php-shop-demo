@@ -3,10 +3,10 @@ session_start();
 require_once(__DIR__ . "/../util/pdo.php");
 
 if(isset($_GET['goodsid'])) {
-    $goodsid = $_GET['goodsid'];
+  $goodsid = $_GET['goodsid'];
 }else{
-    $goodsid = "";
-    // $goodsid = "";
+  $goodsid = "";
+  // $goodsid = "";
 }
 $pdo = getPdo();
 $query = <<<EOL
@@ -31,55 +31,57 @@ $st = $pdo->query($query);
 $row = $st->fetch(PDO::FETCH_ASSOC); 
 //echo var_dump($row);
 
+$zaiko = $row['quantity']==0 ? "無し" : $row['quantity'];
 //まとめて取るのはよくない。商品自体はあるのに、在庫数が未セットの場合も、商品が無いように見える
 ?>
 
 <!DOCTYPE html>
 <html lang="ja">
-<head>
+  <head>
     <meta charset="UTF-8">
     <title><?=$row['name']?></title>
-</head>
-<body>
-<?php if($row === FALSE){  ?>
-<span>お探しの商品は見つかりませんでした</span>
-<?php }else{ ?>
-<h2></h2>
-<a href="index.php">TOPへ戻る</a>
-<hr>
+<script id="php" zaiko='<?= $zaiko?>'></script>
+  </head>
+  <body>
+    <?php if($row === FALSE){  ?>
+    <span>お探しの商品は見つかりませんでした</span>
+    <?php }else{ ?>
+    <h2></h2>
+    <a href="index.php">TOPへ戻る</a>
+    <hr>
 
-<p>商品説明</p>
-<table>
-    <tr>
+    <p>商品説明</p>
+    <table>
+      <tr>
         <td>商品名</td>
         <td><?=$row['name']?></td>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <td>単価</td>
         <td><?=$row['price']?></td>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <td>サイズ</td>
         <td><?=$row['size']?></td>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <td>ブランド</td>
         <td><?=$row['brand_name'] ." (". $row['brand_country'].")"?></td>
-    </tr>
-    <tr>
+      </tr>
+      <tr>
         <td>在庫数</td>
-        <?php
-            $zaiko = $row['quantity']==0 ? "無し" : $row['quantity'];
-        ?>
-        <td><?= $zaiko ?></td>
-    </tr>
-</table>
-<hr>
-<form action="added.php" method="post">
-    <input type="hidden" name="goodsid" value="<?= $row['id']?>">
-    <input type="number" name="quantity">
-    <input type="submit" value="買い物かごに入れる">
-</form>
-<?php } ?>
-</body>
+       <td><?= $zaiko ?></td>
+      </tr>
+    </table>
+    <hr>
+    <form id="chumonFrom" action="added.php" method="post">
+      <input type="hidden" name="goodsid" value="<?= $row['id']?>">
+      <input id="chumonNum" type="number" name="quantity">
+      <input type="submit" value="買い物かごに入れる">
+    </form>
+    <p id="attention"></p>
+    <?php } ?>
+  </body>
+<script src="./jquery-3.1.1.min.js"></script>
+<script src="./goods.js"></script>
 </html>
