@@ -29,7 +29,7 @@ EOL;
 // $query = "select * from inventory.goods"; 
 $st = $pdo->query($query);
 $row = $st->fetch(PDO::FETCH_ASSOC); 
-echo var_dump($row);
+//echo var_dump($row);
 
 //まとめて取るのはよくない。商品自体はあるのに、在庫数が未セットの場合も、商品が無いように見える
 ?>
@@ -45,6 +45,9 @@ echo var_dump($row);
 <span>お探しの商品は見つかりませんでした</span>
 <?php }else{ ?>
 <h2></h2>
+<a href="index.php">TOPへ戻る</a>
+<hr>
+
 <p>商品説明</p>
 <table>
     <tr>
@@ -72,9 +75,10 @@ echo var_dump($row);
     </tr>
 </table>
 <hr>
-<form action="" method="post">
-<input type="number">
-<input type="submit" value="買い物かごに入れる">
+<form action="added.php" method="post">
+    <input type="hidden" name="goodsid" value="<?= $row['id']?>">
+    <input type="number" name="quantity">
+    <input type="submit" value="買い物かごに入れる">
 </form>
 <?php } ?>
 </body>

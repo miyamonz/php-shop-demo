@@ -53,6 +53,9 @@ echo var_dump($isDuplicate), "daburi ari";
 <h1>買い物かご</h1>
 <a href="index.php">topへ戻る</a>
 <table style="border: 1px solid;">
+<?php if(count($cart) == 0) {?>
+<p>かごは空です</p>
+<?php } ?>    
 <?php for($i=0;$i< count($cart); $i++) {?>
     <tr>
         <td>商品名</td>
