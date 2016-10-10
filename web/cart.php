@@ -17,7 +17,7 @@ if(!is_null($_SESSION['cart'])){
     $cart = $_SESSION['cart'];
 }else {
     $cart = [];
-    echo "仮のデータを入れています","<br>";
+    echo "仮のデータを入れています",PHP_EOL;
     $cart = getDemoCart();
 }
 // echo "cart ",var_dump($cart), PHP_EOL;
@@ -25,22 +25,21 @@ if(!is_null($_SESSION['cart'])){
 //カゴの商品のデータを取ってきます
 $details = [];
 for($i=0; $i<count($cart); $i++){
-    $tmp = $cart[$i];
-    $goodsid = $cart[$i]['goodsid'];
-    $query = "select * from inventory.goods where id = '{$goodsid}'";
-    $st = $pdo->query($query);
-    $row = $st->fetch(PDO::FETCH_ASSOC);
-    $details[] = $row;
+  $tmp = $cart[$i];
+  $goodsid = $cart[$i]['goodsid'];
+  $query = "select * from inventory.goods where id = '{$goodsid}'";
+  $st = $pdo->query($query);
+  $row = $st->fetch(PDO::FETCH_ASSOC);
+  $details[] = $row;
 }
 // echo "detail ", var_dump($details), PHP_EOL;
 
 // だぶりチェック
-$ids = [];
-for($i=0; $i<count($cart); $i++){
-    $ids[] = $cart[$i]["goodsid"];
+if(isDuplicate($cart)){
+  $cart = joinCart($cart);
+  $_SESSION['cart'] = $cart;
 }
-$isDuplicate = !($ids === array_unique($ids));
-echo var_dump($isDuplicate), "daburi ari";
+
 ?>
 
 <!DOCTYPE html>
@@ -48,6 +47,21 @@ echo var_dump($isDuplicate), "daburi ari";
 <head>
     <meta charset="UTF-8">
     <title>買い物かご</title>
+    <style>
+      table {
+border-collapse: collapse;
+}
+table td {
+padding-right: 50px;
+}
+table tr:last-child ,table tr:first-child{
+  border: solid 1px;
+}
+table td form {
+display: inline-flex;
+float: right;
+}
+    </style>
 </head>
 <body>
 <h1>買い物かご</h1>
@@ -56,31 +70,36 @@ echo var_dump($isDuplicate), "daburi ari";
 <?php if(count($cart) == 0) {?>
 <p>かごは空です</p>
 <?php } ?>    
-<?php for($i=0;$i< count($cart); $i++) {?>
     <tr>
         <td>商品名</td>
-        <td><?= $details[$i]["name"]?></td>
         <td>単価</td>
-        <td><?= $details[$i]["price"]?></td>
         <td>注文個数</td>
-        <td><?= $cart[$i]["quantity"]?></td>
         <td>金額</td>
-        <td><?=  $details[$i]["price"]* $cart[$i]["quantity"]?></td>
+    </tr>
+<?php for($i=0;$i< count($cart); $i++) {?>
+    <tr>
+        <td><?= $details[$i]["name"]?></td>
+        <td><?= $details[$i]["price"]?></td>
+        <td><?= $cart[$i]["quantity"]?>
+          <form method="post" action="<?= $_SERVER['PHP_SELF']?>" style="display:none">
+            <input type="number" name="quantity" value='<?= $cart[$i]['quantity']?>'>
+            <button type="submit" name="" value='<?= $i?>'>変更する</button>
+          </form>
+            
+            <span class="henkou" name="" value='<?= $i?>'>変更する</span>
+        </td>
         <td>
-        <form method="post" action="<?$_SERVER['PHP_SELF']?>">
-                <button type="submit" name="delete" value='<?= $i?>'>削除する</button>
-            </form>
+          <?=  $details[$i]["price"]* $cart[$i]["quantity"] ?>
+          <form method="post" action="<?= $_SERVER['PHP_SELF']?>">
+            <button type="submit" name="delete" value='<?= $i?>'>削除する</button>
+          </form>
         </td>
     </tr>
 <?php } ?>    
     <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
         <td>合計金額</td>
+        <td></td>
+        <td></td>
 <?php
 $sum =0;
 for($i=0; $i<count($cart); $i++){
@@ -91,7 +110,7 @@ for($i=0; $i<count($cart); $i++){
         <td><?=  $sum?></td>
     </tr>
 </table>
-<form method="get" action="<?$_SERVER['PHP_SELF']?>">
+<form method="get" action="<?= $_SERVER['PHP_SELF'] ?>">
     <button type="submit" name="deleteall" value=''>買い物かごを空にする</button>
 </form>
 <hr>
@@ -100,4 +119,6 @@ for($i=0; $i<count($cart); $i++){
     <button type="submit" name="confirm">注文確認画面へ進む</button>
 </form>
 </body>
+<script src="./jquery-3.1.1.min.js"></script>
+<script src="./cart.js"></script>
 </html>

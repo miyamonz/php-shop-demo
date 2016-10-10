@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__."/cartUtil.php");
 
 function getPdo(){
   $user = "testuser";

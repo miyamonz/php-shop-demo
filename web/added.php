@@ -15,7 +15,7 @@ if(isset($_POST['quantity'])){
 
 $isPost        = false;
 $isInDb        = false;
-$isZaikoTariru = false;
+$isNumCorrect = false;
 $isAccept      = false;
 $isPost = !is_null($goodsid) and !is_null($quantity);
 
@@ -24,16 +24,23 @@ $eroors = [];
 //postされたデータが適切かをチェック
 if($isPost){
   $goodsInfo = getById($goodsid);
-  // echo var_dump($goodsInfo);
+
   if(!$goodsInfo == false) $isInDb = true;
-}else $errors[] = "ポストされてないか、変です";
+
+  if(ctype_digit($quantity)){
+    $quantity = (int)$quantity;
+  }else{
+    $isInDb = false;
+  }
+
+  
+}else $errors[] = "ポストされてないです";
 
 if($isInDb){
   $goodsName     = $goodsInfo['name'];
   $zaiko         = $goodsInfo['quantity'];
-  echo $zaiko;
-  $isZaikoTariru = ($zaiko >= $quantity);
-  if($isZaikoTariru) $isAccept = true;
+  $isNumCorrect = (0<$quantity) && ($quantity <= $zaiko);
+  if($isNumCorrect) $isAccept = true;
 }else $errors[] = "dbにありませんでした";
 
 if($isAccept){
@@ -65,18 +72,19 @@ if($isAccept){
             <td><?= $quantity?></td>
         </tr>
     </table>
-<?php }else if($isInDb && !$isZaikoTariru){ ?> 
+<?php }else if($isInDb && !$isNumCorrect){ ?> 
 <p>
-  エラー：申し訳ありませんが、現在在庫数不足ですので、<?= $quantity?>個の注文はできません。<br>
-  <?= $zaiko ?>個以下での注文をお願いします。
+  エラー：注文数が正しくありません。在庫以下の注文をお願いします。<br>
+  在庫数：<?= $zaiko ?><br>
+  注文数：<?= $quantity?><br>
 </p>
 
 <?php }else if($isPost && !$isInDb) { ?> 
 <p>
-エラー：商品IDが不正です。<?= $goodsid?>
+エラー：商品IDまたは個数が不正です。<br>
+商品ID:<?= $goodsid?><br>
+個数:<?= $quantity?>
 </p>
-<?php }else { ?> 
-   <p>エラー：商品が追加されませんでした。</p>
 <?php } ?> 
 
 <a href="cart.php">買い物かごを確認する</a>
