@@ -9,6 +9,17 @@ if(!is_null($_SESSION['cart'])){
     echo "仮のデータを入れています",PHP_EOL;
     $cart = getDemoCart();
 }
+
+$errors = [];
+// だぶりチェック
+if(isDuplicate($cart)){
+  $cart = joinCart($cart);
+  $_SESSION['cart'] = $cart;
+}
+
+if(!checkCartIsOk($cart)){
+  $errors[] = "カートが不正です";
+}
 //カゴの商品のデータを取ってきます
 $pdo = getPdo();
 $details = [];
@@ -21,11 +32,6 @@ for($i=0; $i<count($cart); $i++){
   $details[] = $row;
 }
 
-// だぶりチェック
-if(isDuplicate($cart)){
-  $cart = joinCart($cart);
-  $_SESSION['cart'] = $cart;
-}
 ?>
 
 <!DOCTYPE html>
@@ -70,9 +76,15 @@ display:inline;
 <h1>買い物かご</h1>
 <a href="index.php">topへ戻る</a>
 <table style="border: 1px solid;">
-<?php if(count($cart) == 0) {?>
-
-<?php } ?>    
+<?php if(count($errors) > 0) {?>
+<ul>
+<?php 
+  foreach ($errors as $err) {
+    echo "<li>", $err,"</li>";
+  }
+?>
+</ul>
+<?php }else{ ?>    
     <tr>
         <td>商品名</td>
         <td>単価</td>
@@ -108,3 +120,4 @@ for($i=0; $i<count($cart); $i++){
 <form action="" method="post">
     <button type="submit" name="confirm">注文を確定する</button>
 </form>
+<?php } ?>    
