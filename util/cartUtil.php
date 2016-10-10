@@ -31,7 +31,7 @@ function isDuplicate($cart){
 }
 
 function joinCart($cart){
-  if(!isDuplicate($cart)) return false;
+  if(!isDuplicate($cart)) return $cart;
   $ids = getIdsOfCart($cart);
   $uniqueIds = array_unique($ids);
 
@@ -55,7 +55,6 @@ function checkCartIsOk($cart){
     $goodsid = $cart[$i]['goodsid'];
     $quantity = $cart[$i]['quantity'];
     $zaiko = getById($goodsid)['quantity'];
-    echo $goodsid," ",$quantity," ", $zaiko,PHP_EOL;
     if($quantity > $zaiko) return false;
     if($quantity <= 0) return false;
   }
