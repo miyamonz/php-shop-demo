@@ -1,5 +1,6 @@
 # phpの勉強 ショップサイトのデモ
 
+|file|説明|
 |---|---|
 | util/*|関数群 php とjs|
 | web/index.php | TOP,商品リスト|
