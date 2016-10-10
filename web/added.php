@@ -87,6 +87,7 @@ if($isAccept){
 </p>
 <?php } ?> 
 
-<a href="cart.php">買い物かごを確認する</a>
+<a href="cart.php">買い物かごを確認する</a><br>
+<a href="index.php">TOPへ戻る</a>
 </body>
 </html>
