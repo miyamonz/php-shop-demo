@@ -24,16 +24,14 @@ $eroors = [];
 //postされたデータが適切かをチェック
 if($isPost){
   $goodsInfo = getById($goodsid);
-
   if(!$goodsInfo == false) $isInDb = true;
 
+  //個数が違った場合も次に行けない
   if(ctype_digit($quantity)){
     $quantity = (int)$quantity;
   }else{
     $isInDb = false;
   }
-
-  
 }else $errors[] = "ポストされてないです";
 
 if($isInDb){

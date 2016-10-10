@@ -49,6 +49,19 @@ function joinCart($cart){
   return $newCart;
 }
 
+function checkCartIsOk($cart){
+  if(!isCartArray($cart)) return false;
+  for($i=0; $i<count($cart); $i++){
+    $goodsid = $cart[$i]['goodsid'];
+    $quantity = $cart[$i]['quantity'];
+    $zaiko = getById($goodsid)['quantity'];
+    echo $goodsid," ",$quantity," ", $zaiko,PHP_EOL;
+    if($quantity > $zaiko) return false;
+    if($quantity <= 0) return false;
+  }
+  return true;
+}
+
 function json_safe_encode($data){
   return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 }
