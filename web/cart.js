@@ -10,3 +10,9 @@ $(document).on('click','.henkou',function (e){
   $(this).text(text);
 });
 
+$(".cartChange").on('click keyup keydown ',function(){
+    var cartNum = Number($(this).attr("value"));
+    var val = $(this).find("input[name=quantity]").val();
+    var ok = zaikoCheck(val, 10, $(this).find("button[type=submit]"));
+});
+

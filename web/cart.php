@@ -81,7 +81,7 @@ float: right;
         <td><?= $details[$i]["name"]?></td>
         <td><?= $details[$i]["price"]?></td>
         <td><?= $cart[$i]["quantity"]?>
-          <form method="post" action="cartChange.php" style="display:none">
+        <form class='cartChange' value='<?=$i?>' method="post" action="cartChange.php" style="display:none">
             <input type="hidden" name="goodsid" value='<?= $cart[$i]['goodsid']?>'>
             <input type="number" name="quantity" value='<?= $cart[$i]['quantity']?>'>
             <button type="submit" name="cartNum" value='<?= $i?>'>変更</button>
@@ -121,5 +121,6 @@ for($i=0; $i<count($cart); $i++){
 </form>
 </body>
 <script src="./jquery-3.1.1.min.js"></script>
+<script src="../util/util.js"></script>
 <script src="./cart.js"></script>
 </html>

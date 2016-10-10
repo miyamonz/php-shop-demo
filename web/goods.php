@@ -83,5 +83,6 @@ $zaiko = $row['quantity']==0 ? "無し" : $row['quantity'];
     <?php } ?>
   </body>
 <script src="./jquery-3.1.1.min.js"></script>
+<script src="../util/util.js"></script>
 <script src="./goods.js"></script>
 </html>
