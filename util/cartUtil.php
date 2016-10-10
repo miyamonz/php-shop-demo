@@ -48,6 +48,27 @@ function joinCart($cart){
 
   return $newCart;
 }
+function checkCartAndDelete($cart){
+  if(!isCartArray($cart)) return false;
+
+  $delKey = [];
+  for($i=0; $i<count($cart); $i++){
+    $goodsid = $cart[$i]['goodsid'];
+    $quantity = $cart[$i]['quantity'];
+    $zaiko = getById($goodsid)['quantity'];
+    $del = false;
+    if($quantity > $zaiko) $del = true;
+    if($quantity <= 0) $del = true;
+
+    if($del) $delKey[] = $i;
+  }
+
+  foreach ($delKey as $key) {
+    unset($cart[$key]);
+  }
+  $cart = array_values($cart);
+  return $cart;
+}
 
 function checkCartIsOk($cart){
   if(!isCartArray($cart)) return false;
@@ -70,7 +91,3 @@ function echoTagWithArray($array){
   echo "'", json_safe_encode($array), "'";
   echo "></script>";
 }
-// $a = getDemoCart();
-// $a[] = getDemoCart()[0];
-// echo print_r($a),PHP_EOL;
-// echo print_r(joinCart($a));

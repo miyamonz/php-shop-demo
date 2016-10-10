@@ -2,6 +2,8 @@
 session_start();
 require_once(__DIR__."/../util/pdo.php");
 
+$goodsid = "";
+$quantity = "";
 if(isset($_POST['goodsid'])){
   $goodsid = $_POST['goodsid'];
 }
@@ -18,9 +20,7 @@ if(isset($_POST['quantity'])){
 //かごと合わせて、やっぱ正しいか
 //正常、かごに追加
 $isPost       = !is_null($goodsid) and !is_null($quantity);
-$isInDb       = false;
-$isNumCorrect = false;
-$isCheckCart  = false;
+$isQuantNum   = ctype_digit($quantity);
 $isAccept     = false;
 
 $errors = [];
@@ -30,16 +30,18 @@ do {
     break;
   }
 
-  if(ctype_digit($quantity)){
+  if($isQuantNum){
     $quantity = (int)$quantity;
   }else{
     $errors[] = "個数が不正です。";
-    break;
   }
 
   $goodsInfo = getById($goodsid);
   if(($goodsInfo == false)) {
     $errors[] = "商品が見つかりませんでした。";
+  }
+
+  if(!$isQuantNum || !$goodsInfo){
     break;
   }
 
@@ -66,11 +68,9 @@ do {
     $_SESSION['cart'] = $oldCart;
     $errors[] = "カゴに既に同じ商品があり、今の注文を合わせると在庫を超えてしまいます。";
     break;
-
   }
 
-  //データベースにあるし在庫も有る
-  $_SESSION['cart'][]= ["goodsid"=>$goodsid, "quantity"=>$quantity];
+  //データベースにあるし在庫も有るし、追加後も在庫を超えない。のでok
   $isAccept = true;
 } while(false);
 
