@@ -12,7 +12,6 @@ if(isset($_GET['deleteall'])){
 }
 
 
-$pdo = getPdo();
 if(!is_null($_SESSION['cart'])){
     $cart = $_SESSION['cart'];
 }else {
@@ -23,6 +22,7 @@ if(!is_null($_SESSION['cart'])){
 // echo "cart ",var_dump($cart), PHP_EOL;
 
 //カゴの商品のデータを取ってきます
+$pdo = getPdo();
 $details = [];
 for($i=0; $i<count($cart); $i++){
   $tmp = $cart[$i];
@@ -40,6 +40,14 @@ if(isDuplicate($cart)){
   $_SESSION['cart'] = $cart;
 }
 
+$zaikos = [];
+for($i=0; $i<count($cart); $i++){
+  $key = $cart[$i]["goodsid"]; 
+  $zaikos[] = [
+    "goodsid" => $key,
+    "zaiko"   => getById($key)['quantity']
+  ];
+}
 ?>
 
 <!DOCTYPE html>
@@ -47,8 +55,9 @@ if(isDuplicate($cart)){
 <head>
     <meta charset="UTF-8">
     <title>買い物かご</title>
-    <style>
-      table {
+<script id="php" cart=<?= json_safe_encode($cart)?> zaiko=<?= json_safe_encode($zaikos)?>></script>
+<style>
+table {
 border-collapse: collapse;
 }
 table td {
@@ -61,14 +70,26 @@ table td form {
 display: inline-flex;
 float: right;
 }
-    </style>
+.henkouContainer{
+}
+table a, .henkouContainer {
+display:inline-block;
+}
+.henkouContainer form input {
+width: 40px;
+display:inline;
+}
+.henkouContainer button + * {
+display:inline;
+}
+</style>
 </head>
 <body>
 <h1>買い物かご</h1>
 <a href="index.php">topへ戻る</a>
 <table style="border: 1px solid;">
 <?php if(count($cart) == 0) {?>
-<p>かごは空です</p>
+
 <?php } ?>    
     <tr>
         <td>商品名</td>
@@ -78,16 +99,18 @@ float: right;
     </tr>
 <?php for($i=0;$i< count($cart); $i++) {?>
     <tr>
-        <td><?= $details[$i]["name"]?></td>
+    <td><?= $details[$i]["name"]?> <a href="goods.php?goodsid=<?= $cart[$i]['goodsid']?>">商品ページへ</a></td>
         <td><?= $details[$i]["price"]?></td>
         <td><?= $cart[$i]["quantity"]?>
+          <div class="henkouContainer">
+            <button class="henkou" name="" value='<?= $i?>'>変更する</button>
         <form class='cartChange' value='<?=$i?>' method="post" action="cartChange.php" style="display:none">
             <input type="hidden" name="goodsid" value='<?= $cart[$i]['goodsid']?>'>
             <input type="number" name="quantity" value='<?= $cart[$i]['quantity']?>'>
             <button type="submit" name="cartNum" value='<?= $i?>'>変更</button>
           </form>
+        </div>
             
-            <button class="henkou" name="" value='<?= $i?>'>変更する</button>
         </td>
         <td>
           <?=  $details[$i]["price"]* $cart[$i]["quantity"] ?>
@@ -116,7 +139,7 @@ for($i=0; $i<count($cart); $i++){
 </form>
 <hr>
 
-<form action="" method="post">
+<form action="confirm.php" method="get">
     <button type="submit" name="confirm">注文確認画面へ進む</button>
 </form>
 </body>

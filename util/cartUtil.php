@@ -43,12 +43,21 @@ function joinCart($cart){
         $sum += $row['quantity'];
     }
     $newCart[] = ['goodsid'=>$id, 'quantity'=>$sum];
-    
+
   }
 
   return $newCart;
 }
 
+function json_safe_encode($data){
+  return json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+}
+function echoTagWithArray($array){
+
+  echo "<script json =";
+  echo "'", json_safe_encode($array), "'";
+  echo "></script>";
+}
 // $a = getDemoCart();
 // $a[] = getDemoCart()[0];
 // echo print_r($a),PHP_EOL;
