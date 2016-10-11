@@ -117,7 +117,7 @@ for($i=0; $i<count($cart); $i++){
 </table>
 <hr>
 
-<form action="" method="post">
+<form action="order.php" method="get">
     <button type="submit" name="confirm">注文を確定する</button>
 </form>
 <?php } ?>    
