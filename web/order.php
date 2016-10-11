@@ -13,5 +13,6 @@ require_once(__DIR__ . "/../util/pdo.php");
 <body>
   
 注文完了しました
+メール送信等は未実装
 </body>
 </html>
