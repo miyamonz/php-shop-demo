@@ -10,10 +10,7 @@
 | web/cartChange.php | 買い物かごの個数変更で使う。cart.phpにリダイレクト |
 | web/confirm.php    | 注文確認画面                                       |
 | web/*.js           | フロントエンド側でバリデーション jquery使用        |
-<<<<<<< HEAD
 
 ##todo
 - [ ] htmlエスケープ
 - [ ] 注文完了後の明細をDBに
-=======
->>>>>>> be95a4ab882e47e038deaaa2449ce268c3ce208d
